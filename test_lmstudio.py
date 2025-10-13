@@ -1,15 +1,13 @@
 import requests
 
-url = "http://127.0.0.1:1234/v1/completions"
-
 payload = {
-    "prompt": "When to take Amlopidine?",
+    "model": "mistral-7b-instruct-v0.2",
+    "messages": [
+        {"role": "user", "content": "What is ibuprofen?"}
+    ],
     "temperature": 0.7,
-    "max_tokens": 200,
-    "model": "mistral-7b-instruct-v0.2"
+    "max_tokens": 512
 }
 
-
-res = requests.post(url, json=payload)
-print("Status:", res.status_code)
-print("Response:", res.json())
+res = requests.post("https://weariest-lacklustrely-jessia.ngrok-free.dev/v1/chat/completions", json=payload)
+print(res.json())

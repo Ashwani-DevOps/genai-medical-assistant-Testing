@@ -1,0 +1,34 @@
+services:
+  genai-backend:
+    build:
+      context: ./backend
+    container_name: genai-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./embeddings/faiss_index:/app/faiss_index
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=production
+      - LMSTUDIO_API=https://weariest-lacklustrely-jessia.ngrok-free.dev
+      - MODEL_NAME=mistral-7b-instruct-v0.2
+      - OPENFDA_API=https://api.fda.gov/drug/label.json
+    command: flask run --host=0.0.0.0 --port=5000
+
+  genai-frontend:
+    build:
+      context: ./frontend
+    container_name: genai-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - genai-backend
+    env_file:
+      - .env
+    environment:
+      - STREAMLIT_SERVER_PORT=3000
+      - BACKEND_URL=http://genai-backend:5000
+      - LMSTUDIO_API=https://weariest-lacklustrely-jessia.ngrok-free.dev
+      - MODEL_NAME=mistral-7b-instruct-v0.2
+    command: streamlit run app.py --server.port=3000 --server.address=0.0.0.0
