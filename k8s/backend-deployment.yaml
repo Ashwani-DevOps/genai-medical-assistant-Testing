@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genai-backend
+  template:
+    metadata:
+      labels:
+        app: genai-backend
+    spec:
+      containers:
+        - name: genai-backend
+          image: genai-backend
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: LMSTUDIO_API
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: LMSTUDIO_API
+            - name: MODEL_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: MODEL_NAME
+              

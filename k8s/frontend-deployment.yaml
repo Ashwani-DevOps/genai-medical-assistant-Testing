@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genai-frontend
+  template:
+    metadata:
+      labels:
+        app: genai-frontend
+    spec:
+      containers:
+        - name: genai-frontend
+          image: genai-frontend
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: BACKEND_URL
+              value: "http://genai-backend:5000"  # Use this if frontend and backend are in same Minikube

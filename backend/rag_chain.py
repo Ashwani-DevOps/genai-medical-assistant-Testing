@@ -2,7 +2,7 @@ import os
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
-def retrieve_context(query, index_path="/app/faiss_index"):
+def retrieve_context(query, index_path="/app/embeddings/faiss_index"):
     # Check if both required files exist
     faiss_file = os.path.join(index_path, "index.faiss")
     pkl_file = os.path.join(index_path, "index.pkl")
