@@ -38,7 +38,7 @@ jobs:
       - name: Install Trivy
         run: |
           sudo apt-get install wget
-          wget wget https://github.github.io/trivy-repo/deb/trivy_0.67.2_Linux-64bit.deb
+          wget https://github.github.io/trivy-repo/deb/trivy_0.67.2_Linux-64bit.deb
           sudo dpkg -i trivy_0.67.2_Linux-64bit.deb
       - name: Scan Dockerfile
         run: trivy config .
