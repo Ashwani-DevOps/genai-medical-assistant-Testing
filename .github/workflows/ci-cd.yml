@@ -1,0 +1,88 @@
+name: Secure CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - featureBranchNo1
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-bandit:
+    name: Python Security Linting (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bandit
+        run: pip install bandit
+      - name: Run Bandit
+        run: bandit -r . || exit 1
+
+  scan-codeql:
+    name: Static Code Analysis (CodeQL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v2
+        with:
+          languages: ['python']
+      - uses: github/codeql-action/analyze@v2
+
+  scan-trivy:
+    name: Container Vulnerability Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.50.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.50.1_Linux-64bit.deb
+      - name: Scan Dockerfile
+        run: trivy config .
+
+  build-feature:
+    name: Build Feature Branch
+    runs-on: ubuntu-latest
+    needs: [lint-bandit, scan-codeql, scan-trivy]
+    if: github.ref == 'refs/heads/featureBranchNo1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Feature Branch
+        run: |
+          echo "Building featureBranchNo1..."
+          make build
+
+  notify-approval:
+    name: Request Approval via Email
+    runs-on: ubuntu-latest
+    needs: build-feature
+    if: github.ref == 'refs/heads/featureBranchNo1'
+    steps:
+      - name: Send Email for Approval
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.example.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "Approval Needed: featureBranchNo1 Build Passed"
+          to: ashwani07.mishra@outlook.com
+          from: CI Bot <ashwani07.mishra@outlook.com>
+          body: |
+            The build for featureBranchNo1 was successful.
+            Please review and approve to proceed with main branch build.
+
+  build-main:
+    name: Build Main Branch
+    runs-on: ubuntu-latest
+    needs: notify-approval
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Main Branch
+        run: |
+          echo "Building main branch..."
+          make build
