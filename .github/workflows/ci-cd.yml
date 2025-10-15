@@ -64,24 +64,19 @@ jobs:
 
 
   notify-approval:
-    name: Request Approval via Email
-    runs-on: ubuntu-latest
-    needs: build-feature
-    if: github.ref == 'refs/heads/featureBranchNo1'
-    steps:
-      - name: Send Email for Approval
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.example.com
-          server_port: 587
-          username: ${{ secrets.EMAIL_USER }}
-          password: ${{ secrets.EMAIL_PASS }}
-          subject: "Approval Needed: featureBranchNo1 Build Passed"
-          to: ashwani07.mishra@outlook.com
-          from: CI Bot <ashwani07.mishra@outlook.com>
-          body: |
-            The build for featureBranchNo1 was successful.
-            Please review and approve to proceed with main branch build.
+    name: Send Email via Gmail
+    uses: dawidd6/action-send-mail@v3
+    with:
+      server_address: smtp.gmail.com
+      server_port: 587
+      username: ${{ secrets.EMAIL_USER }}
+      password: ${{ secrets.EMAIL_PASS }}
+      subject: "Approval Needed: featureBranchNo1 Build Passed"
+      to: ashwanikumarm@gmail.com
+      from: CI Bot <ashwanikumarm@gmail.com>
+      body: |
+        The build for featureBranchNo1 was successful.
+        Please review and approve to proceed with main branch build.
 
   build-main:
     name: Build Main Branch
