@@ -9,6 +9,11 @@ on:
     branches:
       - main
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   lint-bandit:
     name: Python Security Linting (Bandit)
@@ -25,10 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v2
+      - uses: github/codeql-action/init@v3
         with:
           languages: python
-      - uses: github/codeql-action/analyze@v2
+      - uses: github/codeql-action/analyze@v3
+
 
   scan-trivy:
     name: Container Vulnerability Scan (Trivy)
