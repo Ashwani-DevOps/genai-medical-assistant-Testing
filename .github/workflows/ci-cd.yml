@@ -73,8 +73,8 @@ jobs:
         with:
             server_address: smtp.gmail.com
             server_port: 587
-            username: ashwanikumarm@gmail.com #${{ secrets.EMAIL_USER }}
-            password: djnfubprpptxlcis #${{ secrets.EMAIL_PASS }}
+            username: ${{ secrets.EMAIL_USER }}
+            password: ${{ secrets.EMAIL_PASS }}
             subject: "Approval Needed: featureBranchNo1 Build Passed"
             to: ashwanikumarm@gmail.com
             from: CI Bot <ashwanikumarm@gmail.com>
