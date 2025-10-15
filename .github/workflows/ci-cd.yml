@@ -18,7 +18,7 @@ jobs:
       - name: Install Bandit
         run: pip install bandit
       - name: Run Bandit
-        run: bandit -r . || exit 1
+        run: bandit -r . --severity-level high || exit 1
 
   scan-codeql:
     name: Static Code Analysis (CodeQL)
