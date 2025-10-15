@@ -60,7 +60,8 @@ jobs:
       - name: Build Feature Branch
         run: |
           echo "Building featureBranchNo1..."
-          make build
+          python -m compileall .
+
 
   notify-approval:
     name: Request Approval via Email
