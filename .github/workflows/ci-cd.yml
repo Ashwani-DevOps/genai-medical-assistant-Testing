@@ -37,9 +37,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Trivy
         run: |
-          sudo apt-get install wget
-          wget https://github.github.io/trivy-repo/deb/trivy_0.67.2_Linux-64bit.deb
-          sudo dpkg -i trivy_0.67.2_Linux-64bit.deb
+          sudo apt-get update
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
       - name: Scan Dockerfile
         run: trivy config .
 
